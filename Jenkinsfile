@@ -57,7 +57,17 @@ pipeline {
                         
                         echo Starting the deployed service...
                         npx e2e-bridge-cli start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        if errorlevel 1 (
+                            echo ERROR: Failed to start service regtestlatest
+                            exit /b 1
+                        ) else (
+                            echo Service regtestlatest started successfully
+                        )
                         echo Service start command completed
+                        
+                        echo Checking service status...
+                        npx e2e-bridge-cli status regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        echo Service status check completed
                         
                     """
                 }
