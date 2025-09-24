@@ -53,10 +53,10 @@ pipeline {
                         )
                          
                         echo All repository files found, starting deployment...
-                        npx e2e-bridge-cli deploy repository/BuilderUML/regtestlatest.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
+                        e2ebridge deploy repository/BuilderUML/regtestlatest.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
                         
                         echo Starting the deployed service...
-                        npx e2e-bridge-cli start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        e2ebridge start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
                         if errorlevel 1 (
                             echo ERROR: Failed to start service regtestlatest
                             exit /b 1
@@ -65,8 +65,11 @@ pipeline {
                         )
                         echo Service start command completed
                         
+                        echo Setting service preferences for automatic startup...
+                        e2ebridge preferences regtestlatest --pref.automaticStartup=true -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        
                         echo Checking service status...
-                        npx e2e-bridge-cli status regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        e2ebridge status regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
                         echo Service status check completed
                         
                     """
