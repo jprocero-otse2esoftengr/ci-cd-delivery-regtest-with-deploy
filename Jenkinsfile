@@ -53,10 +53,17 @@ pipeline {
                         )
                          
                         echo All repository files found, starting deployment...
-                        e2ebridge deploy repository/BuilderUML/regtestlatest.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
+                        echo Checking available commands...
+                        where e2ebridge
+                        where npx
+                        echo Trying npx e2e-bridge-cli...
+                        npx e2e-bridge-cli deploy repository/BuilderUML/regtestlatest.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
+                        
+                        echo Stopping any existing service first...
+                        npx e2e-bridge-cli stop regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} || echo No existing service to stop
                         
                         echo Starting the deployed service...
-                        e2ebridge start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        npx e2e-bridge-cli start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
                         if errorlevel 1 (
                             echo ERROR: Failed to start service regtestlatest
                             exit /b 1
@@ -65,11 +72,14 @@ pipeline {
                         )
                         echo Service start command completed
                         
+                        echo Waiting 5 seconds for service to initialize...
+                        timeout /t 5 /nobreak
+                        
                         echo Setting service preferences for automatic startup...
-                        e2ebridge preferences regtestlatest --pref.automaticStartup=true -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        npx e2e-bridge-cli preferences regtestlatest --pref.automaticStartup=true -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
                         
                         echo Checking service status...
-                        e2ebridge status regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        npx e2e-bridge-cli status regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
                         echo Service status check completed
                         
                     """
