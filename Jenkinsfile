@@ -73,6 +73,7 @@ pipeline {
                         npx e2e-bridge-cli status regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
                         
                         echo Service start completed - control port should now be available
+                        echo Jenkinsfile version: Latest with service management commands
                         
                     """
                 }
