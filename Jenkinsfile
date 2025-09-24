@@ -22,8 +22,8 @@ pipeline {
         string(name: 'BRIDGE_HOST', defaultValue: 'ec2-52-74-183-0.ap-southeast-1.compute.amazonaws.com', description: 'Bridge host address')
         string(name: 'BRIDGE_USER', defaultValue: 'jprocero', description: 'Bridge username')
         password(name: 'BRIDGE_PASSWORD', defaultValue: 'jprocero', description: 'Bridge password')
-        string(name: 'BRIDGE_PORT', defaultValue: '11186', description: 'Bridge port')
-        string(name: 'CONTROL_PORT', defaultValue: '21190', description: 'Control port')
+        string(name: 'BRIDGE_PORT', defaultValue: '11165', description: 'Bridge port')
+        string(name: 'CONTROL_PORT', defaultValue: '21176', description: 'Control port')
     }
 
     stages {
@@ -46,13 +46,13 @@ pipeline {
                     bat """
                         echo Checking for repository files...
                        
-                        if not exist repository\\BuilderUML\\JenkinsCoffeeSoap.rep (
-                            echo ERROR: JenkinsCoffeeSoap.rep not found!
+                        if not exist repository\\BuilderUML\\regtestlatest.rep (
+                            echo ERROR: regtestlatest.rep not found!
                             exit /b 1
                         )
                          
                         echo All repository files found, starting deployment...
-                        npx e2e-bridge-cli deploy repository/BuilderUML/JenkinsCoffeeSoap.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
+                        npx e2e-bridge-cli deploy repository/BuilderUML/regtestlatest.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
                         
                     """
                 }
@@ -72,21 +72,21 @@ pipeline {
                         )
                         
                         echo Checking if test cases exist...
-                        if not exist "testcase\\coffee_service_tests.xml" (
-                            echo ERROR: Test cases not found in testcase directory
-                            echo Please ensure testcase/coffee_service_tests.xml exists
+                        if not exist "regressiontest\\testsuite\\testsuite.xml" (
+                            echo ERROR: Test cases not found in regressiontest directory
+                            echo Please ensure regressiontest/testsuite/testsuite.xml exists
                             exit /b 1
                         )
                         
                         echo Test cases found, starting regression tests...
                         echo Test configuration:
-                        echo - Project: BuilderUML
+                        echo - Project: .
                         echo - Host: ${BRIDGE_HOST}
                         echo - Port: ${BRIDGE_PORT}
                         echo - Username: ${BRIDGE_USER}
-                        echo - Test cases: testcase/coffee_service_tests.xml
+                        echo - Test cases: regressiontest/testsuite/testsuite.xml
                         
-                        java -jar "${REGTEST_JAR}" -project BuilderUML -suite "testcase/coffee_service_tests.xml" -host ${BRIDGE_HOST} -port ${BRIDGE_PORT} -username ${BRIDGE_USER} -password ${BRIDGE_PASSWORD} -logfile result.xml
+                        java -jar "${REGTEST_JAR}" -project . -host ${BRIDGE_HOST} -port ${BRIDGE_PORT} -username ${BRIDGE_USER} -password ${BRIDGE_PASSWORD} -logfile result.xml
                         
                         if errorlevel 1 (
                             echo Tests completed with errors
@@ -126,7 +126,7 @@ pipeline {
                                 // Create a placeholder result for Jenkins reporting
                                 writeFile file: 'result.xml', text: '''<?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-   <testsuite name="Coffee Service Regression Tests" tests="1" failures="0" errors="0" skipped="1">
+   <testsuite name="BuilderUML Regression Tests" tests="1" failures="0" errors="0" skipped="1">
       <testcase name="TestConfigurationCheck" classname="RegressionTest">
          <skipped message="Test configuration needs verification - check test cases and service deployment"/>
       </testcase>
@@ -141,14 +141,14 @@ pipeline {
                             archiveArtifacts artifacts: 'result.xml'
                             
                             // Also archive test case files for debugging
-                            archiveArtifacts artifacts: 'testcase/**/*.xml'
+                            archiveArtifacts artifacts: 'regressiontest/**/*.xml'
                             
                         } else {
                             echo "No test results file found - this indicates a test execution problem"
                             // Create a failure result for Jenkins
                             writeFile file: 'result.xml', text: '''<?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-   <testsuite name="Coffee Service Regression Tests" tests="1" failures="1" errors="0" skipped="0">
+   <testsuite name="BuilderUML Regression Tests" tests="1" failures="1" errors="0" skipped="0">
       <testcase name="TestExecutionFailure" classname="RegressionTest">
          <failure message="Test execution failed - result.xml was not generated"/>
       </testcase>
