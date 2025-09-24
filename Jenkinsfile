@@ -54,6 +54,11 @@ pipeline {
                         echo All repository files found, starting deployment...
                         npx e2e-bridge-cli deploy repository/BuilderUML/regtestlatest.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
                         
+                        echo Starting the deployed service to ensure control port is available...
+                        npx e2e-bridge-cli start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        
+                        echo Service start completed - control port should now be available
+                        
                     """
                 }
             }
