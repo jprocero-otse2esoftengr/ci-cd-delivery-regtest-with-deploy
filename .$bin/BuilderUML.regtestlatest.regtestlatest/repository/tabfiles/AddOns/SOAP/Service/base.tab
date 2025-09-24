@@ -2,5 +2,5 @@
    <MaximumConnections>50</MaximumConnections>
    <ResolveHostnames>true</ResolveHostnames>
    <TracingAllowed>true</TracingAllowed>
-   <PortNumber>11170</PortNumber>
+   <PortNumber>11165</PortNumber>
 </SEI_HTTP_Service>

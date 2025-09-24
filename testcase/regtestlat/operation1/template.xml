@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Testcase operation="operation1" porttype="NameOfPortType1" service="BuilderUMLService">
    <System>
-      <location>http://localhost:11170/BuilderUMLService/NameOfPortType1</location>
+      <location>http://localhost:11165/BuilderUMLService/NameOfPortType1</location>
       <documentStyle>document</documentStyle>
       <soapAction>urn:operation1</soapAction>
       <namespaces>
@@ -12,7 +12,7 @@
          <EncodingNamespace>http://schemas.xmlsoap.org/soap/encoding/</EncodingNamespace>
          <EncodingNamespacePrefix>soapenc</EncodingNamespacePrefix>
       </namespaces>
-      <control>http://localhost:21165</control>
+      <control>http://localhost:21176</control>
    </System>
    <Request>
       <env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
