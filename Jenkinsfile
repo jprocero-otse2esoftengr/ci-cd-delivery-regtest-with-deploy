@@ -8,6 +8,7 @@ pipeline {
     
     environment {
         REGTEST_JAR = 'jarfiles/RegTestRunner-8.10.5.jar'
+        XUMLC = 'jarfiles/xumlc-7.20.0.jar'
     }
     
     triggers {
@@ -31,7 +32,7 @@ pipeline {
             steps {
                 dir('.') {
                     bat """
-                        java -jar ${params.XUMLC} -uml uml/BuilderUML.xml
+                        java -jar ${XUMLC} -uml uml/BuilderUML.xml
                         if errorlevel 1 exit /b 1
                         echo Build completed successfully
                         dir repository\\BuilderUML\\*.rep
@@ -52,10 +53,10 @@ pipeline {
                         )
                          
                         echo All repository files found, starting deployment...
-                        npx e2e-bridge-cli deploy repository/BuilderUML/regtestlatest.rep -h ${params.BRIDGE_HOST} -u ${params.BRIDGE_USER} -P ${params.BRIDGE_PASSWORD} -o overwrite
+                        npx e2e-bridge-cli deploy repository/BuilderUML/regtestlatest.rep -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD} -o overwrite
                         
                         echo Starting the deployed service...
-                        npx e2e-bridge-cli start regtestlatest -h ${params.BRIDGE_HOST} -u ${params.BRIDGE_USER} -P ${params.BRIDGE_PASSWORD}
+                        npx e2e-bridge-cli start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
                         
                     """
                 }
