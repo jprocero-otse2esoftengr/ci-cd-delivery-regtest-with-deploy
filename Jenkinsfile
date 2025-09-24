@@ -57,6 +57,7 @@ pipeline {
                         
                         echo Starting the deployed service...
                         npx e2e-bridge-cli start regtestlatest -h ${BRIDGE_HOST} -u ${BRIDGE_USER} -P ${BRIDGE_PASSWORD}
+                        echo Service start command completed
                         
                     """
                 }
